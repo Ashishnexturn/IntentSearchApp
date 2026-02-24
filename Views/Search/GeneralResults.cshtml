@@ -1,22 +1,55 @@
-@model IntentResult
+@model SearchResultViewModel
 
 @{
     ViewData["Title"] = "General Search Results";
 }
 
-<div class="text-center">
-    <h1 class="display-4">General Results</h1>
-    <div class="card mt-4 border-info">
-        <div class="card-body text-info">
-            <h5 class="card-title">Intent detected: @Model.Intent</h5>
-            <p class="card-text">
-                Keyword: <strong>@Model.Keyword</strong><br />
-                Category: <strong>@Model.Category</strong>
-            </p>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-5 mb-4">General Search Results</h1>
+
+            <!-- Search Summary Card -->
+            <div class="card mb-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Search Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Your Query:</strong> <span class="text-info">@Model.SearchQuery</span></p>
+                    <p><strong>Detected Intent:</strong> <span class="badge bg-info">@Model.Intent.Intent</span></p>
+                    <p><strong>Keyword:</strong> <span class="badge bg-secondary">@Model.Intent.Keyword</span></p>
+                    <p class="mb-0"><strong>Results Count:</strong> <span class="badge bg-secondary">@Model.TotalProducts</span></p>
+                </div>
+            </div>
+
+            @if (Model.Products.Any())
+            {
+                <p class="mb-3">We found <strong>@Model.TotalProducts</strong> products matching your search.</p>
+                <div class="list-group">
+                    @foreach (var product in Model.Products.Take(20))
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">@product.Name</h6>
+                                <small class="text-muted">$@product.Price.ToString("F2")</small>
+                            </div>
+                            <p class="mb-1 text-muted">@product.Description</p>
+                            <small><span class="badge bg-info">@product.Category</span> <span class="badge bg-secondary">@product.Intent</span></small>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info alert-dismissible fade show">
+                    <h5>No Results Found</h5>
+                    <p>No items found matching "@Model.SearchQuery". Try using different keywords.</p>
+                </div>
+            }
+            
+            <div class="mt-4 text-center">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Search</a>
+            </div>
         </div>
-    </div>
-    
-    <div class="mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Search</a>
     </div>
 </div>

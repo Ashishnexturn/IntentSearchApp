@@ -1,8 +1,17 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Add logging
+builder.Services.AddLogging(config =>
+{
+    config.AddConsole();
+    config.AddDebug();
+    config.SetMinimumLevel(LogLevel.Information);
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IntentService>();
+builder.Services.AddSingleton<ProductService>();
 
 var app = builder.Build();
 

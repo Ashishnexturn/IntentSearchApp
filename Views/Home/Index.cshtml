@@ -2,18 +2,98 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Intent Search</h1>
-    <p>Search for products, categories, or general information.</p>
+<div class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-3 fw-bold">🛍️ Intent Search</h1>
+            <p class="lead text-muted">Search for products based on your intent or occasion</p>
+        </div>
 
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <form asp-controller="Search" asp-action="Search" method="post">
-                <div class="input-group mb-3">
-                    <input type="text" name="query" class="form-control form-control-lg" placeholder="Ask me anything... (e.g., 'show me red shoes')" aria-label="Search query" aria-describedby="button-search" required>
-                    <button class="btn btn-primary btn-lg" type="submit" id="button-search">Search</button>
+        <!-- Main Search Bar -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8">
+                <form asp-controller="Search" asp-action="Search" method="post">
+                    <div class="input-group input-group-lg shadow-lg">
+                        <input type="text" 
+                               name="query" 
+                               class="form-control form-control-lg" 
+                               placeholder="Try: 'party lunch' or 'snacks for gathering'..." 
+                               aria-label="Search query" 
+                               aria-describedby="button-search" 
+                               required
+                               autocomplete="off">
+                        <button class="btn btn-primary btn-lg px-5" type="submit" id="button-search">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Popular Searches -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold mb-3">💡 Try these searches:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="javascript:void(0)" onclick="searchQuery('party lunch')" class="badge bg-success p-2">Party Lunch</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('snacks for party')" class="badge bg-success p-2">Snacks for Party</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('cold drinks')" class="badge bg-info p-2">Cold Drinks</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('lunch items')" class="badge bg-info p-2">Lunch Items</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('gathering food')" class="badge bg-warning text-dark p-2">Gathering Food</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('party snacks')" class="badge bg-danger p-2">Party Snacks</a>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="mb-3">🎯</h2>
+                        <h5 class="card-title">Intent Recognition</h5>
+                        <p class="card-text text-muted">Our AI understands your intent, whether it's a party, lunch, or casual gathering</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="mb-3">📦</h2>
+                        <h5 class="card-title">Smart Product Matching</h5>
+                        <p class="card-text text-muted">Get relevant products matched to your occasion or need</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="mb-3">⚡</h2>
+                        <h5 class="card-title">Instant Results</h5>
+                        <p class="card-text text-muted">Find exactly what you need in seconds</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+function searchQuery(query) {
+    // Create a form to submit the search
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/Search';
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'query';
+    input.value = query;
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>

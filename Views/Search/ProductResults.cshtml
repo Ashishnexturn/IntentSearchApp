@@ -1,22 +1,98 @@
-@model IntentResult
+@model SearchResultViewModel
 
 @{
     ViewData["Title"] = "Product Search Results";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Product Results</h1>
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">Intent detected: @Model.Intent</h5>
-            <p class="card-text">
-                Keyword: <strong>@Model.Keyword</strong><br />
-                Category: <strong>@Model.Category</strong>
-            </p>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="display-5 mb-4">Product Search Results</h1>
+
+            <!-- Search Summary Card -->
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Search Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Your Query:</strong> <span class="text-info">@Model.SearchQuery</span></p>
+                    <p><strong>Detected Intent:</strong> <span class="badge bg-success">@Model.Intent.Intent</span></p>
+                    <p><strong>Keyword:</strong> <span class="badge bg-info">@Model.Intent.Keyword</span></p>
+                    <p><strong>Category:</strong> <span class="badge bg-warning text-dark">@Model.Intent.Category</span></p>
+                    <p class="mb-0"><strong>Products Found:</strong> <span class="badge bg-secondary">@Model.TotalProducts</span></p>
+                </div>
+            </div>
+
+            <!-- Products Display -->
+            @if (Model.Products.Any())
+            {
+                <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">@product.Category</span>
+                                        @if (product.Quantity > 0)
+                                        {
+                                            <span class="badge bg-info">In Stock</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@product.Name</h5>
+                                    <p class="card-text text-muted">@product.Description</p>
+                                    
+                                    <div class="mb-3">
+                                        <span class="text-muted small">Intent:</span>
+                                        <span class="badge bg-secondary">@product.Intent</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="mb-0 text-success">${@product.Price.ToString("F2")}</h5>
+                                            <small class="text-muted">Qty: @product.Quantity</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary" disabled>Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">No Products Found!</h4>
+                    <p>Sorry, we didn't find any products matching your search for "<strong>@Model.SearchQuery</strong>"</p>
+                    <p class="mb-0">Try searching with different keywords or intents like "party", "lunch", "snacks", etc.</p>
+                </div>
+            }
+
+            <!-- Back Button -->
+            <div class="mt-4 text-center">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Back to Search
+                </a>
+            </div>
         </div>
     </div>
-    
-    <div class="mt-4">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Search</a>
-    </div>
 </div>
+
+<style>
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+</style>
