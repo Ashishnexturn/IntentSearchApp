@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Intent Search</h1>
+    <p>Search for products, categories, or general information.</p>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <form asp-controller="Search" asp-action="Search" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" name="query" class="form-control form-control-lg" placeholder="Ask me anything... (e.g., 'show me red shoes')" aria-label="Search query" aria-describedby="button-search" required>
+                    <button class="btn btn-primary btn-lg" type="submit" id="button-search">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

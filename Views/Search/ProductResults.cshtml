@@ -1,0 +1,22 @@
+@model IntentResult
+
+@{
+    ViewData["Title"] = "Product Search Results";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Product Results</h1>
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Intent detected: @Model.Intent</h5>
+            <p class="card-text">
+                Keyword: <strong>@Model.Keyword</strong><br />
+                Category: <strong>@Model.Category</strong>
+            </p>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Search</a>
+    </div>
+</div>
