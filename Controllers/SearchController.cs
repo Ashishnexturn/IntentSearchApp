@@ -4,14 +4,12 @@ namespace IntentSearchApp.Controllers;
 
 public class SearchController : Controller
 {
-    private readonly IntentService _intentService;
-    private readonly ProductService _productService;
+    private readonly ISearchOrchestrator _searchOrchestrator;
     private readonly ILogger<SearchController> _logger;
 
-    public SearchController(IntentService intentService, ProductService productService, ILogger<SearchController> logger)
+    public SearchController(ISearchOrchestrator searchOrchestrator, ILogger<SearchController> logger)
     {
-        _intentService = intentService;
-        _productService = productService;
+        _searchOrchestrator = searchOrchestrator;
         _logger = logger;
     }
 
@@ -19,40 +17,42 @@ public class SearchController : Controller
     [Route("/Search")]
     public async Task<IActionResult> Search(string query)
     {
-        _logger.LogInformation("Search initiated with query: {Query}", query);
+        _logger.LogInformation("SearchController: Search initiated with query: {Query}", query);
 
-        var intent = await _intentService.DetectIntent(query);
-
-        // Get products based on detected intent and keyword
-        var products = _productService.GetProductsByIntent(intent.Intent, intent.Keyword);
-
-        // If no products found by intent, try keyword search
-        if (!products.Any())
+        if (string.IsNullOrWhiteSpace(query))
         {
-            _logger.LogInformation("No products found by intent, trying keyword search");
-            products = _productService.SearchByKeyword(query);
+            return BadRequest("Search query cannot be empty");
         }
 
-        var viewModel = new SearchResultViewModel
+        try
         {
-            Intent = intent,
-            Products = products,
-            SearchQuery = query,
-            TotalProducts = products.Count
-        };
+            // Use the orchestrator to perform the complete search
+            var viewModel = await _searchOrchestrator.SearchAsync(query);
 
-        _logger.LogInformation("Search completed. Found {Count} products for intent: {Intent}", products.Count, intent.Intent);
+            _logger.LogInformation("SearchController: Search completed. Found {Count} products", viewModel.TotalProducts);
 
-        // Route based on product results
-        if (products.Any())
-        {
+            // Display results
             return View("ProductResults", viewModel);
         }
-        else if (intent.Intent == "CategorySearch")
+        catch (Exception ex)
         {
-            return View("CategoryResults", viewModel);
+            _logger.LogError(ex, "SearchController: Error during search for query: {Query}", query);
+            return View("GeneralResults", new SearchResultViewModel
+            {
+                SearchQuery = query,
+                Products = new List<Product>(),
+                Intent = new IntentResult()
+            });
         }
+    }
 
-        return View("GeneralResults", viewModel);
+    [HttpGet]
+    [Route("/Browse")]
+    public async Task<IActionResult> Browse(int? categoryId)
+    {
+        _logger.LogInformation("SearchController: Browsing with categoryId: {CategoryId}", categoryId);
+        
+        return View("Browse");
     }
 }
+

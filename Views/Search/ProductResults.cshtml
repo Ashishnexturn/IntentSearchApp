@@ -4,82 +4,147 @@
     ViewData["Title"] = "Product Search Results";
 }
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="display-5 mb-4">Product Search Results</h1>
+            <h1 class="display-5 mb-4">Search Results</h1>
 
             <!-- Search Summary Card -->
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Search Summary</h5>
-                </div>
+            <div class="card mb-4 border-0 shadow-sm bg-gradient">
                 <div class="card-body">
-                    <p><strong>Your Query:</strong> <span class="text-info">@Model.SearchQuery</span></p>
-                    <p><strong>Detected Intent:</strong> <span class="badge bg-success">@Model.Intent.Intent</span></p>
-                    <p><strong>Keyword:</strong> <span class="badge bg-info">@Model.Intent.Keyword</span></p>
-                    <p><strong>Category:</strong> <span class="badge bg-warning text-dark">@Model.Intent.Category</span></p>
-                    <p class="mb-0"><strong>Products Found:</strong> <span class="badge bg-secondary">@Model.TotalProducts</span></p>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <p class="mb-2"><strong>Your Query:</strong></p>
+                            <h5 class="text-primary">@Model.SearchQuery</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-2"><strong>Detected Intent:</strong></p>
+                            <span class="badge bg-success fs-6">@Model.Intent?.Intent?.ToUpper()</span>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <p class="mb-2"><strong>Results Found:</strong></p>
+                            <h5 class="text-info">
+                                <span class="badge bg-info">@Model.TotalProducts Products</span>
+                            </h5>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Products Display -->
+            <!-- Products Grid -->
             @if (Model.Products.Any())
             {
                 <div class="row">
                     @foreach (var product in Model.Products)
                     {
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-header bg-light">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-success">@product.Category</span>
-                                        @if (product.Quantity > 0)
-                                        {
-                                            <span class="badge bg-info">In Stock</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger">Out of Stock</span>
-                                        }
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 shadow-sm transition-card">
+                                <!-- Product Image Placeholder -->
+                                <div class="bg-light p-4 text-center position-relative" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                                    <div class="text-muted">
+                                        <h1>📦</h1>
+                                        <small>@product.Category?.Name</small>
                                     </div>
+                                    @if ((product.Inventory?.Quantity ?? 0) <= 10)
+                                    {
+                                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Low Stock</span>
+                                    }
                                 </div>
+
                                 <div class="card-body">
-                                    <h5 class="card-title">@product.Name</h5>
-                                    <p class="card-text text-muted">@product.Description</p>
+                                    <h5 class="card-title text-truncate" title="@product.Name">@product.Name</h5>
                                     
-                                    <div class="mb-3">
-                                        <span class="text-muted small">Intent:</span>
-                                        <span class="badge bg-secondary">@product.Intent</span>
+                                    @if (!string.IsNullOrEmpty(product.Brand))
+                                    {
+                                        <small class="text-muted d-block mb-2">Brand: <strong>@product.Brand</strong></small>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(product.Description))
+                                    {
+                                        <p class="card-text text-muted small" style="max-height: 50px; overflow: hidden;">@product.Description</p>
+                                    }
+
+                                    <!-- Rating -->
+                                    <div class="mb-2">
+                                        <span class="text-warning me-2">
+                                            ★ @product.Rating.ToString("F1")
+                                        </span>
+                                        <small class="text-muted">(@product.ReviewCount reviews)</small>
                                     </div>
-                                </div>
-                                <div class="card-footer bg-light">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h5 class="mb-0 text-success">${@product.Price.ToString("F2")}</h5>
-                                            <small class="text-muted">Qty: @product.Quantity</small>
+
+                                    <!-- Tags -->
+                                    @if (!string.IsNullOrEmpty(product.IntentTags))
+                                    {
+                                        <div class="mb-2">
+                                            @{
+                                                var tags = product.IntentTags.Split(',').Take(2);
+                                                foreach (var tag in tags)
+                                                {
+                                                    <span class="badge bg-light text-dark small me-1">@tag.Trim()</span>
+                                                }
+                                            }
                                         </div>
-                                        <button class="btn btn-sm btn-primary" disabled>Add to Cart</button>
+                                    }
+                                </div>
+
+                                <div class="card-footer bg-white border-top">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="text-success mb-0">${@product.Price.ToString("F2")}</h6>
+                                            @if (product.OriginalPrice.HasValue && product.OriginalPrice > product.Price)
+                                            {
+                                                <small class="text-muted text-decoration-line-through">$@product.OriginalPrice.Value.ToString("F2")</small>
+                                            }
+                                        </div>
+                                        <div>
+                                            @{
+                                                var inStock = (product.Inventory?.Quantity ?? 0) > 0;
+                                            }
+                                            @if (inStock)
+                                            {
+                                                <span class="badge bg-success">In Stock</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Out of Stock</span>
+                                            }
+                                        </div>
                                     </div>
+                                    <small class="text-muted d-block">Stock: <strong>@(product.Inventory?.Quantity ?? 0)</strong></small>
                                 </div>
                             </div>
                         </div>
                     }
                 </div>
+
+                <!-- Pagination Info -->
+                <nav aria-label="Page navigation" class="mt-4">
+                    <div class="text-center text-muted">
+                        <small>Showing @Model.Products.Count of @Model.TotalProducts results</small>
+                    </div>
+                </nav>
             }
             else
             {
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <h4 class="alert-heading">No Products Found!</h4>
                     <p>Sorry, we didn't find any products matching your search for "<strong>@Model.SearchQuery</strong>"</p>
-                    <p class="mb-0">Try searching with different keywords or intents like "party", "lunch", "snacks", etc.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>Tips:</strong>
+                        <ul>
+                            <li>Try using different keywords</li>
+                            <li>Use more specific search terms</li>
+                            <li>Check your spelling</li>
+                        </ul>
+                    </p>
                 </div>
             }
 
             <!-- Back Button -->
-            <div class="mt-4 text-center">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">
-                    <i class="fas fa-arrow-left"></i> Back to Search
+            <div class="mt-5 text-center">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                    <i class="fas fa-arrow-left"></i> New Search
                 </a>
             </div>
         </div>
@@ -87,12 +152,29 @@
 </div>
 
 <style>
-    .card {
-        transition: transform 0.3s, box-shadow 0.3s;
+    .transition-card {
+        transition: all 0.3s ease;
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+
+    .transition-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .bg-gradient .card-body {
+        color: white;
+    }
+
+    .bg-gradient p, .bg-gradient strong {
+        color: white;
+    }
+
+    .text-warning {
+        color: #ffc107 !important;
     }
 </style>

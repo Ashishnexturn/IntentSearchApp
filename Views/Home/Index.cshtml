@@ -2,11 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="py-5">
+<div class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <h1 class="display-3 fw-bold">🛍️ Intent Search</h1>
-            <p class="lead text-muted">Search for products based on your intent or occasion</p>
+            <h1 class="display-3 fw-bold">🛍️ Intent-Based Search</h1>
+            <p class="lead text-muted">Search for anything using natural language intent</p>
         </div>
 
         <!-- Main Search Bar -->
@@ -17,7 +17,7 @@
                         <input type="text" 
                                name="query" 
                                class="form-control form-control-lg" 
-                               placeholder="Try: 'party lunch' or 'snacks for gathering'..." 
+                               placeholder="Try: 'party snacks' or 'healthy breakfast items'..." 
                                aria-label="Search query" 
                                aria-describedby="button-search" 
                                required
@@ -28,33 +28,33 @@
             </div>
         </div>
 
-        <!-- Popular Searches -->
-        <div class="row justify-content-center mb-4">
+        <!-- Quick Search Examples -->
+        <div class="row justify-content-center mb-5">
             <div class="col-md-8">
-                <div class="card border-0 bg-light">
+                <div class="card border-0 bg-white shadow-sm">
                     <div class="card-body">
                         <h6 class="card-title fw-bold mb-3">💡 Try these searches:</h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <a href="javascript:void(0)" onclick="searchQuery('party lunch')" class="badge bg-success p-2">Party Lunch</a>
-                            <a href="javascript:void(0)" onclick="searchQuery('snacks for party')" class="badge bg-success p-2">Snacks for Party</a>
-                            <a href="javascript:void(0)" onclick="searchQuery('cold drinks')" class="badge bg-info p-2">Cold Drinks</a>
-                            <a href="javascript:void(0)" onclick="searchQuery('lunch items')" class="badge bg-info p-2">Lunch Items</a>
-                            <a href="javascript:void(0)" onclick="searchQuery('gathering food')" class="badge bg-warning text-dark p-2">Gathering Food</a>
-                            <a href="javascript:void(0)" onclick="searchQuery('party snacks')" class="badge bg-danger p-2">Party Snacks</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('party snacks')" class="badge bg-success p-2">Party Snacks</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('healthy breakfast')" class="badge bg-success p-2">Healthy Breakfast</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('cold drinks for party')" class="badge bg-info p-2">Cold Drinks</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('fresh vegetables')" class="badge bg-info p-2">Fresh Vegetables</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('baking ingredients')" class="badge bg-warning text-dark p-2">Baking Ingredients</a>
+                            <a href="javascript:void(0)" onclick="searchQuery('beauty products')" class="badge bg-danger p-2">Beauty Products</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Features -->
+        <!-- Features Section -->
         <div class="row mt-5">
             <div class="col-md-4 mb-4">
                 <div class="card text-center border-0 shadow-sm h-100">
                     <div class="card-body">
                         <h2 class="mb-3">🎯</h2>
-                        <h5 class="card-title">Intent Recognition</h5>
-                        <p class="card-text text-muted">Our AI understands your intent, whether it's a party, lunch, or casual gathering</p>
+                        <h5 class="card-title">AI Intent Recognition</h5>
+                        <p class="card-text text-muted">Our AI understands your shopping intent and finds exactly what you need</p>
                     </div>
                 </div>
             </div>
@@ -62,8 +62,8 @@
                 <div class="card text-center border-0 shadow-sm h-100">
                     <div class="card-body">
                         <h2 class="mb-3">📦</h2>
-                        <h5 class="card-title">Smart Product Matching</h5>
-                        <p class="card-text text-muted">Get relevant products matched to your occasion or need</p>
+                        <h5 class="card-title">Smart Matching</h5>
+                        <p class="card-text text-muted">Get relevant products matched to your specific needs instantly</p>
                     </div>
                 </div>
             </div>
@@ -71,8 +71,33 @@
                 <div class="card text-center border-0 shadow-sm h-100">
                     <div class="card-body">
                         <h2 class="mb-3">⚡</h2>
-                        <h5 class="card-title">Instant Results</h5>
-                        <p class="card-text text-muted">Find exactly what you need in seconds</p>
+                        <h5 class="card-title">Lightning Fast</h5>
+                        <p class="card-text text-muted">Multi-agent orchestration for instant, accurate results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="row mt-5 pt-5 border-top">
+            <div class="col-md-12">
+                <h4 class="text-center fw-bold mb-4">🏗️ Powered By Advanced Architecture</h4>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Intent Agent</small>
+                        <span class="badge bg-light text-dark">Groq AI</span>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Keyword Agent</small>
+                        <span class="badge bg-light text-dark">NLP</span>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Catalog Agent</small>
+                        <span class="badge bg-light text-dark">Entity Framework</span>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted d-block">Inventory Agent</small>
+                        <span class="badge bg-light text-dark">Real-time</span>
                     </div>
                 </div>
             </div>
@@ -82,7 +107,6 @@
 
 <script>
 function searchQuery(query) {
-    // Create a form to submit the search
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '/Search';
@@ -97,3 +121,4 @@ function searchQuery(query) {
     form.submit();
 }
 </script>
+
